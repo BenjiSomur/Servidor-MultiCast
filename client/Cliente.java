@@ -1,8 +1,8 @@
+
 import java.io.*;
 import java.net.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 public class Cliente {
 
     private static final int PORT = 1234;
@@ -11,13 +11,12 @@ public class Cliente {
     private static DatagramPacket inPkt, outPkt;
     private static byte[] buff;
     private static String msg = "", msgIn = "";
-    
-    private static final String GROUP = "225.4.5.6";
+    private static final String GROUP = "192.168.1.164";
     private static InetAddress host;
-    private static byte TTL = 3;
-    
+    private static byte TTjava intellisenseL = 3;
+
     public static void main(String[] args) {
-        
+
         try {
             ms = new MulticastSocket();
         } catch (UnknownHostException e) {
@@ -38,7 +37,7 @@ public class Cliente {
                 System.out.print("Ingresar mensaje: ");
                 msg = userEntry.readLine();
 
-                //enviar mensajes hasta recibir BYEsend messages until BYE is sent
+                // enviar mensajes hasta recibir BYEsend messages until BYE is sent
                 if (!msg.equals("BYE")) {
 
                     outPkt = new DatagramPacket(msg.getBytes(), msg.length(), host, PORT);
