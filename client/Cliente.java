@@ -41,7 +41,7 @@ public class Cliente {
                 if (!msg.equals("BYE")) {
 
                     outPkt = new DatagramPacket(msg.getBytes(), msg.length(), host, PORT);
-                    ms.send(outPkt);
+                    dgramSocket.send(outPkt);
                     buff = new byte[256];
                     inPkt = new DatagramPacket(buff, buff.length);
                     ms.receive(inPkt);
