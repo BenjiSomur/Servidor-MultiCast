@@ -4,11 +4,11 @@
 public class Mensaje {
 
     private String contenido;
-    private int tiempoEnCola;
+    private int usuario;
 
-    public Mensaje(String contenido) {
+    public Mensaje(String contenido, int usuario) {
         this.contenido = contenido;
-        this.tiempoEnCola = 0;
+        this.usuario = usuario;
     }
 
     /**
@@ -19,9 +19,9 @@ public class Mensaje {
     }
 
     /**
-     * @return the tiempoEnCola
+     * @return the usuario
      */
-    public int getTiempoEnCola() {
-        return tiempoEnCola;
+    public int getUsuario() {
+        return usuario;
     }
 }

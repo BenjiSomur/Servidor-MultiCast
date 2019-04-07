@@ -3,6 +3,7 @@ import java.io.*;
 import java.net.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 public class Cliente {
 
     private static final int PORT = 1234;
@@ -13,7 +14,7 @@ public class Cliente {
     private static String msg = "", msgIn = "";
     private static final String GROUP = "192.168.1.164";
     private static InetAddress host;
-    private static byte TTjava intellisenseL = 3;
+    private static byte TTL = 3;
 
     public static void main(String[] args) {
 
