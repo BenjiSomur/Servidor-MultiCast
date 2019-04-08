@@ -1,59 +1,64 @@
 
 import java.io.*;
 import java.net.*;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Cliente {
 
     private static final int PORT = 1234;
-    private static DatagramSocket dgramSocket;
+    private static Socket socket;
     private static MulticastSocket ms;
-    private static DatagramPacket inPkt, outPkt;
-    private static byte[] buff;
-    private static String msg = "", msgIn = "";
-    private static final String GROUP = "192.168.1.164";
-    private static InetAddress host;
-    private static byte TTL = 3;
+    private static String group;
 
     public static void main(String[] args) {
-
+        group = args[0];
         try {
-            ms = new MulticastSocket();
+            ms = new MulticastSocket(PORT);
+            ms.joinGroup(InetAddress.getByName(group));
+        } catch (SocketException ex) {
+            System.out.println("No se encontro la dirección");
+            ex.printStackTrace();
         } catch (UnknownHostException e) {
             System.out.println("No se encontro en HOST!");
             System.exit(1);
         } catch (IOException ex) {
             Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
         }
+        System.out.println("Ingrese su mensaje");
         run();
     }
 
     public static void run() {
-        try {
+        while (true) {
+            try {
+                byte buf[] = new byte[1024];
+                DatagramPacket pack = new DatagramPacket(buf, buf.length);
+                ms.receive(pack);
+                if (!pack.getData().toString().isEmpty()) {
+                    System.out.write(pack.getData(), 0, pack.getLength());
+                    System.out.println();
+                } else {
 
-            BufferedReader userEntry = new BufferedReader(new InputStreamReader(System.in));
-            host = InetAddress.getByName(GROUP);
-            do {
-                System.out.print("Ingresar mensaje: ");
-                msg = userEntry.readLine();
-
-                // enviar mensajes hasta recibir BYEsend messages until BYE is sent
-                if (!msg.equals("BYE")) {
-
-                    outPkt = new DatagramPacket(msg.getBytes(), msg.length(), host, PORT);
-                    dgramSocket.send(outPkt);
-                    buff = new byte[256];
-                    inPkt = new DatagramPacket(buff, buff.length);
-                    ms.receive(inPkt);
-                    msgIn = new String(inPkt.getData(), 0, inPkt.getLength());
-                    System.out.println("SERVIDOR: " + msgIn);
+                    Scanner sc = new Scanner(System.in);
+                    String mensaje = sc.nextLine();
+                    System.out.println(mensaje);
+                    if (!"exit".equals(mensaje)) {
+                        try (PrintStream outputStream = new PrintStream(socket.getOutputStream())) {
+                            outputStream.println(mensaje);
+                            outputStream.flush();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        socket.close();
+                        System.exit(0);
+                    }
                 }
-            } while (!msg.equals("BYE"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            dgramSocket.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 }

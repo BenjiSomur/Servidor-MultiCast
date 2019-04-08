@@ -1,7 +1,7 @@
 import java.io.IOException;
 import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.MulticastSocket;
 import java.net.SocketException;
 
 /**
@@ -9,23 +9,23 @@ import java.net.SocketException;
  * @version 1.0
  */
 public class Sender {
-    private DatagramSocket serverSocket;
     private String group;
     private int port;
+    private MulticastSocket ms;
 
     public Sender(String group, int port) throws SocketException, IOException {
         this.group = group;
         this.port = port;
-        serverSocket = new DatagramSocket();
+        ms = new MulticastSocket(port);
     }
 
     public void send(String mensajeEnviar) throws IOException {
         byte[] mensaje = mensajeEnviar.getBytes();
         DatagramPacket paquete = new DatagramPacket(mensaje, mensaje.length, InetAddress.getByName(group), port);
-        serverSocket.send(paquete);
+        ms.send(paquete);
     }
 
     public void close() {
-        serverSocket.close();
+        ms.close();
     }
 }
